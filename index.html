@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/Ephemeroptera_Polymitarcyidae_1.js"></script>
+        <script src="data/Ephemeroptera_Ephemerythidae_2.js"></script>
+        <script src="data/Ephemeroptera_Chironomidae_3.js"></script>
+        <script src="data/Ephemeroptera_Caenidae_4.js"></script>
+        <script src="data/Ephemeroptera_Baetidae_5.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:2
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 2,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Ephemeroptera_Polymitarcyidae_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">waterBody</th>\
+                        <td>' + (feature.properties['waterBody'] !== null ? autolinker.link(feature.properties['waterBody'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['year'] !== null ? autolinker.link(feature.properties['year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['eventDate'] !== null ? autolinker.link(feature.properties['eventDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>locality</strong><br />' + (feature.properties['locality'] !== null ? autolinker.link(feature.properties['locality'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLatitude'] !== null ? autolinker.link(feature.properties['decimalLatitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLongitude'] !== null ? autolinker.link(feature.properties['decimalLongitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['order'] !== null ? autolinker.link(feature.properties['order'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['family'] !== null ? autolinker.link(feature.properties['family'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['subFamily'] !== null ? autolinker.link(feature.properties['subFamily'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['genus'] !== null ? autolinker.link(feature.properties['genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['specificEpithet'] !== null ? autolinker.link(feature.properties['specificEpithet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['scientificName'] !== null ? autolinker.link(feature.properties['scientificName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['organismQuantity'] !== null ? autolinker.link(feature.properties['organismQuantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Indicator'] !== null ? autolinker.link(feature.properties['Indicator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ephemeroptera_Polymitarcyidae_1_0(feature) {
+            switch(String(feature.properties['Indicator'])) {
+                case 'Good':
+                    return {
+                pane: 'pane_Ephemeroptera_Polymitarcyidae_1',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,202,99,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bad':
+                    return {
+                pane: 'pane_Ephemeroptera_Polymitarcyidae_1',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(206,40,45,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Ephemeroptera_Polymitarcyidae_1');
+        map.getPane('pane_Ephemeroptera_Polymitarcyidae_1').style.zIndex = 401;
+        map.getPane('pane_Ephemeroptera_Polymitarcyidae_1').style['mix-blend-mode'] = 'normal';
+        var layer_Ephemeroptera_Polymitarcyidae_1 = new L.geoJson(json_Ephemeroptera_Polymitarcyidae_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ephemeroptera_Polymitarcyidae_1',
+            layerName: 'layer_Ephemeroptera_Polymitarcyidae_1',
+            pane: 'pane_Ephemeroptera_Polymitarcyidae_1',
+            onEachFeature: pop_Ephemeroptera_Polymitarcyidae_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Ephemeroptera_Polymitarcyidae_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Ephemeroptera_Polymitarcyidae_1);
+        map.addLayer(layer_Ephemeroptera_Polymitarcyidae_1);
+        function pop_Ephemeroptera_Ephemerythidae_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">waterBody</th>\
+                        <td>' + (feature.properties['waterBody'] !== null ? autolinker.link(feature.properties['waterBody'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['year'] !== null ? autolinker.link(feature.properties['year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['eventDate'] !== null ? autolinker.link(feature.properties['eventDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['locality'] !== null ? autolinker.link(feature.properties['locality'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLatitude'] !== null ? autolinker.link(feature.properties['decimalLatitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLongitude'] !== null ? autolinker.link(feature.properties['decimalLongitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['order'] !== null ? autolinker.link(feature.properties['order'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['family'] !== null ? autolinker.link(feature.properties['family'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['subFamily'] !== null ? autolinker.link(feature.properties['subFamily'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['genus'] !== null ? autolinker.link(feature.properties['genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['specificEpithet'] !== null ? autolinker.link(feature.properties['specificEpithet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['scientificName'] !== null ? autolinker.link(feature.properties['scientificName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['organismQuantity'] !== null ? autolinker.link(feature.properties['organismQuantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Indicator'] !== null ? autolinker.link(feature.properties['Indicator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ephemeroptera_Ephemerythidae_2_0(feature) {
+            switch(String(feature.properties['Indicator'])) {
+                case 'Good':
+                    return {
+                pane: 'pane_Ephemeroptera_Ephemerythidae_2',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,166,214,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bad':
+                    return {
+                pane: 'pane_Ephemeroptera_Ephemerythidae_2',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,178,114,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Ephemeroptera_Ephemerythidae_2');
+        map.getPane('pane_Ephemeroptera_Ephemerythidae_2').style.zIndex = 402;
+        map.getPane('pane_Ephemeroptera_Ephemerythidae_2').style['mix-blend-mode'] = 'normal';
+        var layer_Ephemeroptera_Ephemerythidae_2 = new L.geoJson(json_Ephemeroptera_Ephemerythidae_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ephemeroptera_Ephemerythidae_2',
+            layerName: 'layer_Ephemeroptera_Ephemerythidae_2',
+            pane: 'pane_Ephemeroptera_Ephemerythidae_2',
+            onEachFeature: pop_Ephemeroptera_Ephemerythidae_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Ephemeroptera_Ephemerythidae_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Ephemeroptera_Ephemerythidae_2);
+        map.addLayer(layer_Ephemeroptera_Ephemerythidae_2);
+        function pop_Ephemeroptera_Chironomidae_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">waterBody</th>\
+                        <td>' + (feature.properties['waterBody'] !== null ? autolinker.link(feature.properties['waterBody'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['year'] !== null ? autolinker.link(feature.properties['year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['eventDate'] !== null ? autolinker.link(feature.properties['eventDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['locality'] !== null ? autolinker.link(feature.properties['locality'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLatitude'] !== null ? autolinker.link(feature.properties['decimalLatitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLongitude'] !== null ? autolinker.link(feature.properties['decimalLongitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['order'] !== null ? autolinker.link(feature.properties['order'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['family'] !== null ? autolinker.link(feature.properties['family'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['subFamily'] !== null ? autolinker.link(feature.properties['subFamily'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['genus'] !== null ? autolinker.link(feature.properties['genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['specificEpithet'] !== null ? autolinker.link(feature.properties['specificEpithet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['scientificName'] !== null ? autolinker.link(feature.properties['scientificName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['organismQuantity'] !== null ? autolinker.link(feature.properties['organismQuantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Indicator'] !== null ? autolinker.link(feature.properties['Indicator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ephemeroptera_Chironomidae_3_0(feature) {
+            switch(String(feature.properties['Indicator'])) {
+                case 'Bad':
+                    return {
+                pane: 'pane_Ephemeroptera_Chironomidae_3',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,123,182,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Good':
+                    return {
+                pane: 'pane_Ephemeroptera_Chironomidae_3',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(128,67,36,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,56,20,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Ephemeroptera_Chironomidae_3');
+        map.getPane('pane_Ephemeroptera_Chironomidae_3').style.zIndex = 403;
+        map.getPane('pane_Ephemeroptera_Chironomidae_3').style['mix-blend-mode'] = 'normal';
+        var layer_Ephemeroptera_Chironomidae_3 = new L.geoJson(json_Ephemeroptera_Chironomidae_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ephemeroptera_Chironomidae_3',
+            layerName: 'layer_Ephemeroptera_Chironomidae_3',
+            pane: 'pane_Ephemeroptera_Chironomidae_3',
+            onEachFeature: pop_Ephemeroptera_Chironomidae_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Ephemeroptera_Chironomidae_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Ephemeroptera_Chironomidae_3);
+        map.addLayer(layer_Ephemeroptera_Chironomidae_3);
+        function pop_Ephemeroptera_Caenidae_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">waterBody</th>\
+                        <td>' + (feature.properties['waterBody'] !== null ? autolinker.link(feature.properties['waterBody'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>year</strong><br />' + (feature.properties['year'] !== null ? autolinker.link(feature.properties['year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['eventDate'] !== null ? autolinker.link(feature.properties['eventDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>locality</strong><br />' + (feature.properties['locality'] !== null ? autolinker.link(feature.properties['locality'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLatitude'] !== null ? autolinker.link(feature.properties['decimalLatitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLongitude'] !== null ? autolinker.link(feature.properties['decimalLongitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['order'] !== null ? autolinker.link(feature.properties['order'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['family'] !== null ? autolinker.link(feature.properties['family'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['subFamily'] !== null ? autolinker.link(feature.properties['subFamily'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['genus'] !== null ? autolinker.link(feature.properties['genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['specificEpithet'] !== null ? autolinker.link(feature.properties['specificEpithet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['scientificName'] !== null ? autolinker.link(feature.properties['scientificName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['organismQuantity'] !== null ? autolinker.link(feature.properties['organismQuantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Indicator'] !== null ? autolinker.link(feature.properties['Indicator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ephemeroptera_Caenidae_4_0(feature) {
+            switch(String(feature.properties['Indicator'])) {
+                case 'Good':
+                    return {
+                pane: 'pane_Ephemeroptera_Caenidae_4',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,238,199,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bad':
+                    return {
+                pane: 'pane_Ephemeroptera_Caenidae_4',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,126,147,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Ephemeroptera_Caenidae_4');
+        map.getPane('pane_Ephemeroptera_Caenidae_4').style.zIndex = 404;
+        map.getPane('pane_Ephemeroptera_Caenidae_4').style['mix-blend-mode'] = 'normal';
+        var layer_Ephemeroptera_Caenidae_4 = new L.geoJson(json_Ephemeroptera_Caenidae_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ephemeroptera_Caenidae_4',
+            layerName: 'layer_Ephemeroptera_Caenidae_4',
+            pane: 'pane_Ephemeroptera_Caenidae_4',
+            onEachFeature: pop_Ephemeroptera_Caenidae_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Ephemeroptera_Caenidae_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Ephemeroptera_Caenidae_4);
+        map.addLayer(layer_Ephemeroptera_Caenidae_4);
+        function pop_Ephemeroptera_Baetidae_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">waterBody</th>\
+                        <td>' + (feature.properties['waterBody'] !== null ? autolinker.link(feature.properties['waterBody'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['year'] !== null ? autolinker.link(feature.properties['year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['eventDate'] !== null ? autolinker.link(feature.properties['eventDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['locality'] !== null ? autolinker.link(feature.properties['locality'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLatitude'] !== null ? autolinker.link(feature.properties['decimalLatitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['decimalLongitude'] !== null ? autolinker.link(feature.properties['decimalLongitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['order'] !== null ? autolinker.link(feature.properties['order'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['family'] !== null ? autolinker.link(feature.properties['family'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['subFamily'] !== null ? autolinker.link(feature.properties['subFamily'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['genus'] !== null ? autolinker.link(feature.properties['genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['specificEpithet'] !== null ? autolinker.link(feature.properties['specificEpithet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['scientificName'] !== null ? autolinker.link(feature.properties['scientificName'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['organismQuantity'] !== null ? autolinker.link(feature.properties['organismQuantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Indicator'] !== null ? autolinker.link(feature.properties['Indicator'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Ephemeroptera_Baetidae_5_0(feature) {
+            switch(String(feature.properties['Indicator'])) {
+                case 'Good':
+                    return {
+                pane: 'pane_Ephemeroptera_Baetidae_5',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(137,19,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bad':
+                    return {
+                pane: 'pane_Ephemeroptera_Baetidae_5',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,216,112,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Ephemeroptera_Baetidae_5');
+        map.getPane('pane_Ephemeroptera_Baetidae_5').style.zIndex = 405;
+        map.getPane('pane_Ephemeroptera_Baetidae_5').style['mix-blend-mode'] = 'normal';
+        var layer_Ephemeroptera_Baetidae_5 = new L.geoJson(json_Ephemeroptera_Baetidae_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Ephemeroptera_Baetidae_5',
+            layerName: 'layer_Ephemeroptera_Baetidae_5',
+            pane: 'pane_Ephemeroptera_Baetidae_5',
+            onEachFeature: pop_Ephemeroptera_Baetidae_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Ephemeroptera_Baetidae_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Ephemeroptera_Baetidae_5);
+        map.addLayer(layer_Ephemeroptera_Baetidae_5);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Ephemeroptera_Baetidae<br /><table><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Baetidae_5_Good0.png" /></td><td>Good</td></tr><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Baetidae_5_Bad1.png" /></td><td>Bad</td></tr></table>': layer_Ephemeroptera_Baetidae_5,'Ephemeroptera_Caenidae<br /><table><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Caenidae_4_Good0.png" /></td><td>Good</td></tr><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Caenidae_4_Bad1.png" /></td><td>Bad</td></tr></table>': layer_Ephemeroptera_Caenidae_4,'Ephemeroptera_Chironomidae<br /><table><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Chironomidae_3_Bad0.png" /></td><td>Bad</td></tr><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Chironomidae_3_Good1.png" /></td><td>Good</td></tr></table>': layer_Ephemeroptera_Chironomidae_3,'Ephemeroptera_Ephemerythidae<br /><table><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Ephemerythidae_2_Good0.png" /></td><td>Good</td></tr><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Ephemerythidae_2_Bad1.png" /></td><td>Bad</td></tr></table>': layer_Ephemeroptera_Ephemerythidae_2,'Ephemeroptera_Polymitarcyidae<br /><table><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Polymitarcyidae_1_Good0.png" /></td><td>Good</td></tr><tr><td style="text-align: center;"><img src="legend/Ephemeroptera_Polymitarcyidae_1_Bad1.png" /></td><td>Bad</td></tr></table>': layer_Ephemeroptera_Polymitarcyidae_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
